@@ -1,0 +1,73 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;" charset="utf-8">
+	<meta name="keywords" content="webcam, NYC, DOT cam, New York webcams, cameras new york, multiple webcameras,live NYC cameras" />
+<meta name="description" content="Watch live New York multiple DOT Webcameras" />
+<meta name="abstract" content="Multiple NYC cameras." />
+<meta name="PRODCAT" content="employment" />
+<meta http-equiv="Content-Language" content="EN" />
+<meta name="DOCUMENTCOUNTRYCODE" content="us" />
+<meta name="author" content="Piotr Strzyzewski" />
+<meta name="distribution" content="Global" />
+<meta name="revisit-after" content="1 day" />
+<meta name="robots" content="follow,index" />
+
+
+
+	<title>NYC multi DOT Cam</title>
+	
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/flick/jquery-ui-1.10.2.custom.css" rel="stylesheet">
+	<script src="js/jquery.js"></script>
+	<script src="js/jquery.masonry.min.js"></script>
+	<script src="js/jquery-ui-1.10.2.custom.min.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/functions.js"></script>
+	
+	<script>
+	var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-29800332-3']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+	</script>
+	
+</head>
+<body>
+	<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=174522619351943";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+	<div id="control" class="buttons">
+		<ul id="icons" class="ui-widget ui-helper-clearfix">
+			<li class="ui-state-default ui-corner-all" title="Zoom in" id="btn-zoomin"><span class="ui-icon ui-icon-zoomin"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Zoom out" id="btn-zoomout"><span class="ui-icon ui-icon-zoomout"></span></li>
+			<li class="ui-state-default ui-corner-all" title="Restore" id="btn-restore"><span class="ui-icon ui-icon-refresh"></span></li>
+		</ul>
+		<div id="infobox">
+			<div id="infohelp">Use buttons to zomm in/out. You can Drag and order cameras.</div>
+
+			<div id="facebooklike" class="fb-like" data-href="http://nycam.matchgenius.com" data-send="true" data-width="450" data-show-faces="false" data-font="tahoma"></div>
+		</div>
+	</div>
+
+	<div id="loader">
+		<div id="progressbar"><div class="progress-label">Loading cameras...</div></div>
+	</div>
+
+	<div id="cameraContainer"></div>
+	<div id="cameraCache" style="display:none"></div>
+
+
+</body>
+</html>
