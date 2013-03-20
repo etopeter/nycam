@@ -57,13 +57,6 @@ var camsDB = [['http://207.251.86.238/cctv403.jpg','Broadway @ 42 St'],
 		var camX = 352;
 		var camY = 240;
 		var camSize = [];
-
-
-
-
-function isInArray(element, index, array) {
-  return (array.indexOf(element) >-1 );
-}
 				
 		// Add hidden element
 		var hidden = $('body').append('<div id="img-cache" style="display:none/>').children('#img-cache');
@@ -93,10 +86,12 @@ function isInArray(element, index, array) {
 			 */
 			
 			var img = $('<img id="cache'+cam+'">');
-			img.attr({class:"camImage",src:url,width:camX,height:camY}).hide()
+			img.attr({class:"camImage",src:url,width:camX,height:camY})
 			.one('load',function(){
-				$("#imgBox"+cam+"").html(this);
-				$("#cache"+cam+"").show();
+				$('#imgBox'+cam).empty();
+				var cachedImage = this;
+				$('#imgBox'+cam).html(cachedImage);
+				
 				 loadedCameras = loadedCameras < cams.length ? loadedCameras+=1 : cams.length;
 				
 			 	var percentage = (loadedCameras/cams.length)*100;
@@ -117,54 +112,45 @@ function isInArray(element, index, array) {
 
 		}
 		
-		function refreshImage() {
+		var refreshImage = function() {
 
-			
 			for (i=0;i<cams.length;i++){
 				$("#cam"+i+"Title").html(cams[i][1]);
-				var src = cams[i][0];//+"?math="+Math.random();
+				var src = cams[i][0]+"?math="+Math.random();
 				loadImage(src,i);				
 			}
-			
-			   		
 		
 			setTimeout('refreshImage()',4000);
 		}
 		
-		function plus() {
-		var cX=parseInt(camX)+Math.round(camX*0.2);
-		var cY=parseInt(camY)+Math.round(camY*0.2);
-		if (cX>50 && cX<1024){
-			camX=cX;
-			camY=cY;
+		/*
+		Function zoom
+			increase or decrease images .2x 
+		 */
+		function zoom(io) {
+			var direction = io == 'in' ? 'in' : 'out';
+			if (direction == 'in'){
+				var cX=camX+Math.round(camX*0.2);
+				var cY=camY+Math.round(camY*0.2);
+			} else {
+				var cX=camX-Math.round(camX*0.2);
+				var cY=camY-Math.round(camY*0.2);
+			}
+			if (cX>50 && cX<1024){
+				camX=cX;
+				camY=cY;
+			
+				$(".cameraItem").css({"height" : camY,"width" : camX});
+				$(".imgBoxContainer").css({"height" : camY,"width" : camX});
+				$(".title").css({"width" : camX});
+				$(".camImage").css({"height" : camY,"width" : camX});
+				camSize[0]=camX;
+				camSize[1]=camY;
+				$.cookie("NYCamSize",camSize,{ expires: 14 });
+			}
+			return false;
 		}
-		$(".cameraItem").css({"height" : camY,"width" : camX});
-		$(".imgBoxContainer").css({"height" : camY,"width" : camX});
-		$(".title").css({"width" : camX});
-		 $(".camImage").css({"height" : camY,"width" : camX});
-		 camSize[0]=camX;
-		 camSize[1]=camY;
-		 $.cookie("NYCamSize",camSize,{ expires: 14 });
 
-		return false;
-		}
-		function minus() {
-		var cX=parseInt(camX)-Math.round(camX*0.2);
-		var cY=parseInt(camY)-Math.round(camY*0.2);
-		if (cX>50 && cX<1024){
-			camX=cX;
-			camY=cY;
-		}
-		$(".cameraItem").css({"height" : camY,"width" : camX});
-		$(".title").css({"width" : camX});
-		$(".imgBoxContainer").css({"height" : camY,"width" : camX});
-		 $(".camImage").css({"height" : camY,"width" : camX});
-		 camSize[0]=camX;
-		 camSize[1]=camY;
-		 $.cookie("NYCamSize",camSize,{ expires: 14 });
-		
-		return false;
-		}
 		
 		Array.prototype.move = function (old_index, new_index) {
 		    if (new_index >= this.length) {
@@ -200,13 +186,14 @@ function isInArray(element, index, array) {
 		function createContent(){
 			cams = getSorted(camsDB,camOrder);
 			$.each(cams, function(index){
-				  var node = "<div class=\"cameraItem\"><div id=\"cam"+index+"Title\" class=\"title\"></div>"+
-				  "<img src=\"del.png\" class=\"delbutton\"/ rel=\""+index+"\">"+
-				  "<div id=\"imgBox"+index+"\" class=\"imgBoxContainer\">"+
-				  "<img src=\"\" class=\"camImage\" id=\"cam"+index+"\"/></div></div>";
-				  $("#cameraContainer").append(node);
-				  
-			  });
+				var node = "<div class=\"cameraItem\"><div id=\"cam"+index+"Title\" class=\"title\"></div>"+
+				"<img src=\"del.png\" class=\"delbutton\"/ rel=\""+index+"\">"+
+				"<div id=\"imgBox"+index+"\" class=\"imgBoxContainer\">"+
+				"<img src=\"\" class=\"camImage\" id=\"cam"+index+"\"/></div></div>";
+				
+				$("#cameraContainer").append(node);
+			});
+
 			$(".cameraItem").css({"height" : camY,"width" : camX});
 			//$(".title").css({"width" : camX});
 			
@@ -234,77 +221,65 @@ function isInArray(element, index, array) {
 		$(function(){
 			$( "#progressbar" ).progressbar({value: 0});
 			$( "#icons li" ).hover(function() {
-				$( this ).addClass( "ui-state-hover" );},function() {
-				$( this ).removeClass( "ui-state-hover" );});
+			$( this ).addClass( "ui-state-hover" );},function() {
+			$( this ).removeClass( "ui-state-hover" );});
 
-			$("#btn-zoomin").click(function(){plus();});
-			$("#btn-zoomout").click(function(){minus();});
+			$("#btn-zoomin").click(function(){zoom('in');});
+			$("#btn-zoomout").click(function(){zoom('out');});
 			$("#btn-restore").click(function(){restore();});
 
-
-
 			//$.removeCookie("NYCamOrder");
-			console.log("Initialized with camera order "+$.cookie("NYCamOrder"));
-			if ($.cookie("NYCamOrder") !==null) {
-				var cookie = $.cookie("NYCamOrder");
-			//camOrder = $.cookie("NYCamOrder");
-			camOrder = cookie ? cookie.split(/,/) : new Array();
 			
+			if ($.cookie("NYCamOrder") !==null) {
+				console.log("Initialized with saved camera order "+$.cookie("NYCamOrder"));
+				var cookie = $.cookie("NYCamOrder");
+				camOrder = cookie ? cookie.split(/,/) : new Array();
 			} else {
-			for (i=0;i<camsDB.length;i++){
-				camOrder.push(i);
-				console.log("camOrder="+camOrder);
+				for (i=0;i<camsDB.length;i++){
+					camOrder.push(i);
+					console.log("camOrder="+camOrder);
+				}
 			}
-			}
+
 			if ($.cookie("NYCamSize") !==null) {
 				var cookie = $.cookie("NYCamSize");
 				camSize = cookie ? cookie.split(/,/) : new Array();
 				if (camSize[0]>0 && camSize[1]>0){
-				camX = camSize[0];
-				camY = camSize[1];
+					camX = parseInt(camSize[0]);
+					camY = parseInt(camSize[1]);
+				}
 			}
-			}
+
 			cams = getSorted(camsDB,camOrder);
-			//$("#load").html("Loading "+cams.length+" cameras...");
-			  createContent();
-
-			
-
-			 
+			createContent();
 			  
-			  $(function() {
-			     $("#cameraContainer").sortable({ opacity: 0.6, cursor: 'move',
-			     forceHelperSize: false,
-			     forcePlaceholderSize: false,
-				 start: function(event, ui) {
-				 	ui.placeholder.height(ui.item.height());
-				 	ui.placeholder.width(ui.item.width());
-		         var start_pos = ui.item.index();
-            	 ui.item.data('start_pos', start_pos);
-		        },
-        		update: function(event, ui) {
-            	var start_pos = ui.item.data('start_pos');
-            	var end_pos = $(ui.item).index();
-            	camOrder.move(start_pos,end_pos);
-            	$.cookie("NYCamOrder",camOrder,{ expires: 14 });
-        		}
+			$("#cameraContainer").sortable({ opacity: 0.6, cursor: 'move',
+				forceHelperSize: false,
+				forcePlaceholderSize: false,
+				start: function(event, ui) {
+					ui.placeholder.height(ui.item.height());
+					ui.placeholder.width(ui.item.width());
+					var start_pos = ui.item.index();
+					ui.item.data('start_pos', start_pos);
+				},
+				update: function(event, ui) {
+					var start_pos = ui.item.data('start_pos');
+					var end_pos = $(ui.item).index();
+					camOrder.move(start_pos,end_pos);
+					$.cookie("NYCamOrder",camOrder,{ expires: 14 });
+				}
         		});
-			   });
 			  
-			  
-			    $('#cameraContainer').masonry({
-			  	itemSelector : '#cameraItem',
-			  	columnWidth : camX
-			    });
+			$('#cameraContainer').masonry({
+				itemSelector : '#cameraItem',
+				columnWidth : camX
+			});
 			    
-			  setTimeout(refreshImage(),1000);
-			  setTimeout(function(){
-			  	$("#infohelp").fadeOut('slow',function(){
-						$("#facebooklike").fadeIn();
-			  	});
+			setTimeout('refreshImage()',1000);
+			setTimeout(
+				function(){
+					$("#infohelp").fadeOut('slow',function(){
+					$("#facebooklike").fadeIn();
+				});
 			  },15000);
-
 		});
-
-
-	
